@@ -83,3 +83,25 @@ You can also cite references that are stored in a `bibtex` file. For example,
 sdasda
 
 
+<select onchange="changeImage(event)">
+  <option value="image1">图片1</option>
+  <option value="image2">图片2</option>
+  <option value="image3">图片3</option>
+</select>
+
+<img id="imageToShow" src="">
+
+<script>
+function changeImage(event) {
+  var selectedValue = event.target.value;
+  var imageToChange = document.getElementById("imageToShow");
+  
+  if (selectedValue === "image1") {
+    imageToChange.src = "../images/model-result/A-100-1.png";
+  } else if (selectedValue === "image2") {
+    imageToChange.src = "../images/model-result/B-100-1.png";
+  } else if (selectedValue === "image3") {
+    imageToChange.src = "../images/model-result/C-100-1.png";
+  }
+}
+</script>
