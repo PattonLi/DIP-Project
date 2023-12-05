@@ -1,4 +1,3 @@
-
 # MystMarkdown Usage
 
 ## build bool
@@ -9,7 +8,6 @@ jupyter-book build ./
 ```
 
 (my-label)=
-
 ## use of myst markdown
 
 ```{note}
@@ -41,7 +39,7 @@ My second tab with `some code`!
 
 [导航](my-label)
 
-```{figure} ./images/logo.png
+```{figure} ../images/logo.png
 :width: 200px
 :align: center
 :name: my-fig-ref
@@ -49,7 +47,7 @@ My second tab with `some code`!
 My figure title.
 ```
 
-<img src="./images/logo.png" alt="fishy" width="200px">
+<img src="../images/logo.png" alt="fishy" width="200px">
 
 ```{sidebar} My sidebar title
 My sidebar content
@@ -83,3 +81,5 @@ You can also cite references that are stored in a `bibtex` file. For example,
 ## ssss
 
 sdasda
+
+

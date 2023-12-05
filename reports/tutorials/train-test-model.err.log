@@ -1,0 +1,74 @@
+Traceback (most recent call last):
+  File "C:\Users\37359\AppData\Roaming\Python\Python310\site-packages\jupyter_cache\executors\utils.py", line 58, in single_nb_execution
+    executenb(
+  File "C:\ProgramData\anaconda3\lib\site-packages\nbclient\client.py", line 1204, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "C:\ProgramData\anaconda3\lib\site-packages\nbclient\util.py", line 84, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "C:\ProgramData\anaconda3\lib\site-packages\nbclient\util.py", line 62, in just_run
+    return loop.run_until_complete(coro)
+  File "C:\ProgramData\anaconda3\lib\asyncio\base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "C:\ProgramData\anaconda3\lib\site-packages\nbclient\client.py", line 663, in async_execute
+    await self.async_execute_cell(
+  File "C:\ProgramData\anaconda3\lib\site-packages\nbclient\client.py", line 965, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "C:\ProgramData\anaconda3\lib\site-packages\nbclient\client.py", line 862, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+
+from PIL import Image
+import numpy as np
+
+# 读取图像
+# image_path = './100-1.png'  # 替换为你自己的图片路径
+image = Image.open(image_path)
+
+# 将图像转换为 numpy 数组
+mask_array = np.array(image)
+
+# 输出矩阵的形状
+print(mask_array.shape)
+print(mask_array.dtype)
+# print(image_array[55])
+
+mask_ones = np.full(mask_array.shape,255,dtype=np.uint8)
+# print(img_ones[55])
+
+mask_zeros = np.full(mask_array.shape,0,dtype=np.uint8)
+# print(img_zeros[55])
+
+mask_reverse = np.zeros(mask_array.shape).astype(np.uint8)
+mask_reverse = np.where(mask_array==0,255,0)
+# print(mask_reverse[55])
+
+mask_random = (np.random.rand(*mask_array.shape)*255).astype(np.uint8)
+# print(mask_random[0])
+
+# 将矩阵转换为图像对象
+# mask_ones = Image.fromarray(mask_ones)
+# mask_ones.save('100-1-ones.png')
+# mask_zeros = Image.fromarray(mask_zeros)
+# mask_zeros.save('100-1-zeros.png')
+# mask_reverse = Image.fromarray(mask_reverse.astype('uint8'))
+# mask_reverse.save('./100-1-reverse.png')
+# mask_random = Image.fromarray(mask_random)
+# mask_random.save('100-1-random.png')
+
+# mask_reverse.show()
+------------------
+
+[1;31m---------------------------------------------------------------------------[0m
+[1;31mNameError[0m                                 Traceback (most recent call last)
+Cell [1;32mIn[4], line 6[0m
+[0;32m      2[0m [38;5;28;01mimport[39;00m [38;5;21;01mnumpy[39;00m [38;5;28;01mas[39;00m [38;5;21;01mnp[39;00m
+[0;32m      4[0m [38;5;66;03m# 读取图像[39;00m
+[0;32m      5[0m [38;5;66;03m# image_path = './100-1.png'  # 替换为你自己的图片路径[39;00m
+[1;32m----> 6[0m image [38;5;241m=[39m Image[38;5;241m.[39mopen([43mimage_path[49m)
+[0;32m      8[0m [38;5;66;03m# 将图像转换为 numpy 数组[39;00m
+[0;32m      9[0m mask_array [38;5;241m=[39m np[38;5;241m.[39marray(image)
+
+[1;31mNameError[0m: name 'image_path' is not defined
+NameError: name 'image_path' is not defined
+
