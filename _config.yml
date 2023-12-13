@@ -1,9 +1,11 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: DIP Project - 图像去阴影
-author: lpt
-# logo: ./images/logo.png
+title: DIP-shadow removing
+author: lpt, zkm, xxx
+logo: ./images/logo.png
+# exclude file
+exclude_patterns: [README.md]
 
 # Force re-execution of notebooks on each build.
 # See https://jupyterbook.org/content/execute.html
@@ -23,13 +25,25 @@ bibtex_bibfiles:
 repository:
   url: https://github.com/PattonLi/DIP-Project # Online location of your book
   path_to_book: / # Optional path to your book, relative to the repository root
-  branch: master # Which branch of the repository should be used when creating links (optional)
+  branch: main # Which branch of the repository should be used when creating links (optional)
 
 # Add GitHub buttons to your book
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
 html:
   use_issues_button: true
   use_repository_button: true
+  use_multitoc_numbering: false
+  home_page_in_navbar: false
 
-# exclude file
-exclude_patterns: [README.md]
+launch_buttons:
+  colab_url: "https://colab.research.google.com"
+  binderhub_url: "https://mybinder.org"
+  thebe: true
+
+parse:
+  myst_enable_extensions:
+    # don't forget to list any other extensions you want enabled,
+    # including those that are enabled by default! See here: https://jupyterbook.org/en/stable/customize/config.html
+    - html_image
+    - amsmath
+    - dollarmath
