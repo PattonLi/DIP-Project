@@ -80,7 +80,7 @@ class MultiHeadAttention(nn.Module):
 
 [1;31m---------------------------------------------------------------------------[0m
 [1;31mModuleNotFoundError[0m                       Traceback (most recent call last)
-Cell [1;32mIn[2], line 4[0m
+Cell [1;32mIn[3], line 4[0m
 [0;32m      2[0m [38;5;28;01mimport[39;00m [38;5;21;01mtorch[39;00m[38;5;21;01m.[39;00m[38;5;21;01mnn[39;00m [38;5;28;01mas[39;00m [38;5;21;01mnn[39;00m
 [0;32m      3[0m [38;5;28;01mimport[39;00m [38;5;21;01mtorch[39;00m[38;5;21;01m.[39;00m[38;5;21;01mnn[39;00m[38;5;21;01m.[39;00m[38;5;21;01mfunctional[39;00m [38;5;28;01mas[39;00m [38;5;21;01mF[39;00m
 [1;32m----> 4[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtransformer[39;00m[38;5;21;01m.[39;00m[38;5;21;01mModules[39;00m [38;5;28;01mimport[39;00m ScaledDotProductAttention

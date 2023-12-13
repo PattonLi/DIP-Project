@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>3.3. CA &#8212; DIP-shadow removing</title>
+    <title>3.1. CA &#8212; DIP-shadow removing</title>
   
   
   
@@ -68,7 +68,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/channel-attention';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="3.4. 注意力机制" href="self-attention.html" />
+    <link rel="next" title="3.2. 注意力机制" href="self-attention.html" />
     <link rel="prev" title="3. SIA核心：self attention" href="pre-knowledge.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -168,12 +168,13 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="notebooks.html">1. code</a></li>
 <li class="toctree-l1"><a class="reference internal" href="myst-markdown.html">2. MystMarkdown Usage</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="pre-knowledge.html">3. SIA核心：self attention</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">3.3. CA</a></li>
-<li class="toctree-l2"><a class="reference internal" href="self-attention.html">3.4. 注意力机制</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">3.1. CA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="self-attention.html">3.2. 注意力机制</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="train-test-model.html">4. 训练-测试 模型</a></li>
 <li class="toctree-l1"><a class="reference internal" href="traditional-method.html">5. 传统的去阴影方法</a></li>
+
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Author</span></p>
 <ul class="nav bd-sidenav">
@@ -440,9 +441,8 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3.3.1. 简述</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">3.3.2. 流程图</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cite">3.3.3. CITE</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3.1.1. 简述</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">3.1.2. 流程图</a></li>
 </ul>
             </nav>
         </div>
@@ -455,9 +455,9 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="ca">
-<h1><span class="section-number">3.3. </span>CA<a class="headerlink" href="#ca" title="Permalink to this heading">#</a></h1>
+<h1><span class="section-number">3.1. </span>CA<a class="headerlink" href="#ca" title="Permalink to this heading">#</a></h1>
 <section id="id1">
-<h2><span class="section-number">3.3.1. </span>简述<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">3.1.1. </span>简述<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 <p>CA注意力机制是最近提出的一种注意力机制，全面关注特征层的空间信息和通道信息</p>
 <p>该文章的作者认为现有的注意力机制（如CBAM、SE）在求取通道注意力的时候，通道的处理一般是采用全局最大池化/平均池化，这样会损失掉物体的空间信息。作者期望在引入通道注意力机制的同时，引入空间注意力机制，作者提出的注意力机制将位置信息嵌入到了通道注意力中。</p>
 <p>CA注意力的实现如图所示，可以认为分为两个并行阶段：</p>
@@ -472,18 +472,14 @@ document.write(`
 ReLU activation function is followed by W0</p>
 </section>
 <section id="id2">
-<h2><span class="section-number">3.3.2. </span>流程图<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">3.1.2. </span>流程图<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
 <figure class="align-center" id="my-fig-ref">
-<a class="reference internal image-reference" href="../_images/channel-attention.png"><img alt="../_images/channel-attention.png" src="../_images/channel-attention.png" style="width: 200px;" /></a>
+<a class="reference internal image-reference" href="../_images/channel-attention.png"><img alt="../_images/channel-attention.png" src="../_images/channel-attention.png" style="width: 400px;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 3.1 </span><span class="caption-text">My figure title.</span><a class="headerlink" href="#my-fig-ref" title="Permalink to this image">#</a></p>
+<p><span class="caption-number">Fig. 3.1 </span><span class="caption-text">Channel attention.</span><a class="headerlink" href="#my-fig-ref" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
-</section>
-<section id="cite">
-<h2><span class="section-number">3.3.3. </span>CITE<a class="headerlink" href="#cite" title="Permalink to this heading">#</a></h2>
-<p><a class="reference external" href="https://paperswithcode.com/method/channel-attention-module">https://paperswithcode.com/method/channel-attention-module</a>
-<a class="reference external" href="https://paperswithcode.com/paper/cbam-convolutional-block-attention-module">https://paperswithcode.com/paper/cbam-convolutional-block-attention-module</a></p>
+<p><a class="reference external" href="https://paperswithcode.com/method/channel-attention-module">感兴趣的可以参考这个链接</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -632,7 +628,7 @@ ReLU activation function is followed by W0</p>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">3.4. </span>注意力机制</p>
+        <p class="prev-next-title"><span class="section-number">3.2. </span>注意力机制</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -651,9 +647,8 @@ ReLU activation function is followed by W0</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3.3.1. 简述</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">3.3.2. 流程图</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cite">3.3.3. CITE</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3.1.1. 简述</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">3.1.2. 流程图</a></li>
 </ul>
   </nav></div>
 

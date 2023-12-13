@@ -172,6 +172,7 @@ const thebe_selector_output = ".output, .cell_output"
 </li>
 <li class="toctree-l1"><a class="reference internal" href="train-test-model.html">4. 训练-测试 模型</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">5. 传统的去阴影方法</a></li>
+
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Author</span></p>
 <ul class="nav bd-sidenav">
@@ -415,7 +416,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -431,6 +434,27 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">5. 传统的去阴影方法</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#background-subtraction">5.1. 图像背景差分（Background Subtraction）</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">6. 直方图均衡化</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe">6.1. clahe</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gamma">6.2. GAMMA</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe-grid">6.3. CLAHE-grid</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe-grid-v2">6.4. CLAHE-grid-v2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gamma-grid">6.5. gamma-grid</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">6.6. 总结</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
         </div>
     </div>
 </div>
@@ -442,7 +466,21 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1><span class="section-number">5. </span>传统的去阴影方法<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
-<p>tradition</p>
+<blockquote>
+<div><p>我们将在这里使用一些传统的图像去阴影的方法，并与基于深度学习的方法做一些简单的对比</p>
+</div></blockquote>
+<blockquote>
+<div><p>我们主要用的是<code class="docutils literal notranslate"><span class="pre">open</span> <span class="pre">cv</span></code>来调用一些傅里叶变化、高斯模糊等过程</p>
+</div></blockquote>
+<section id="background-subtraction">
+<h2><span class="section-number">5.1. </span>图像背景差分（Background Subtraction）<a class="headerlink" href="#background-subtraction" title="Permalink to this heading">#</a></h2>
+<p>将读入的彩色图像拆分成三个不同的灰度通道，对每个通道进行如下处理：</p>
+<ol class="arabic simple">
+<li><p>膨胀操作：用大小为 (7,7) 的矩形结构元素对当前灰度通道进行膨胀操作，使图像中的每个物体更加紧密。</p></li>
+<li><p>中值滤波：用大小为 (21,21) 的方形窗口对当前灰度通道进行中值滤波，以去除一些随机的噪声。</p></li>
+<li><p>差分操作：用中值滤波后的图像减去原图像，得到差分图像。</p></li>
+<li><p>归一化操作：将得到的差分图像通过线性变换映射到 [0, 255] 的像素值范围内，从而得到归一化后的图像。这一步操作可以调整图像对比度，使前景物体更加明显。</p></li>
+</ol>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cv2</span>
@@ -465,8 +503,76 @@ document.write(`
 <span class="n">result</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">result_planes</span><span class="p">)</span>
 <span class="n">result_norm</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">result_norm_planes</span><span class="p">)</span>
 
-<span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;../images/tradition/100-1.png&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
-<span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;../images/tradition/100-1-norm.png&#39;</span><span class="p">,</span> <span class="n">result_norm</span><span class="p">)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;../images/tradition/100-1-Background-Subtraction.png&#39;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;../images/tradition/100-1-Background-Subtraction-norm.png&#39;</span><span class="p">,</span> <span class="n">result_norm</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell tag_hide-input docutils container">
+<details class="hide above-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell source</span>
+<span class="expanded">Hide code cell source</span>
+</summary>
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.family&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;SimHei&#39;</span>
+
+<span class="c1"># 创建2x5的子图网格</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># 指定每个子图的位置和标签</span>
+<span class="n">positions</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;原图&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;背景差分&#39;</span><span class="p">),</span> 
+             <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;背景差分-norm&#39;</span><span class="p">)</span>
+             <span class="p">]</span>
+
+<span class="n">img_path</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;../images/model-result/A-100-1.png&#39;</span><span class="p">,</span><span class="s1">&#39;../images/tradition/100-1-Background-Subtraction.png&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;../images/tradition/100-1-Background-Subtraction-norm.png&#39;</span><span class="p">,</span>
+            <span class="p">]</span>
+<span class="c1"># 加载并显示每个子图的PNG图片</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">position</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">positions</span><span class="p">):</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">img_path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+<span class="c1"># 调整子图之间的间距和外边距</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">margins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># 展示图形</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</details>
+<div class="cell_output docutils container">
+<img alt="../_images/251cb6a1e86b45afffc4ff73345573dbe0af8a92ad151364df1fa2597e0975d1.png" src="../_images/251cb6a1e86b45afffc4ff73345573dbe0af8a92ad151364df1fa2597e0975d1.png" />
+</div>
+</div>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="id2">
+<h1><span class="section-number">6. </span>直方图均衡化<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h1>
+<p>步骤是将彩色图像转换为灰度图像，并通过直方图均衡化增强图像的对比度和亮度，可以看到结果并不是很好</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">method_v1</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">equalizeHist</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">res</span>
+
+<span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;../images/model-result/A-100-1.png&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">img_output</span> <span class="o">=</span> <span class="n">method_v1</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;../images/tradition/100-1-histogram-equalization.png&#39;</span><span class="p">,</span> <span class="n">img_output</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -478,16 +584,44 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">method_v1</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
-    <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">equalizeHist</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># 创建2x5的子图网格</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
-    <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">img</span><span class="p">,</span> <span class="n">res</span><span class="p">])</span>
+<span class="c1"># 指定每个子图的位置和标签</span>
+<span class="n">positions</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;原图&#39;</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;hist-eq&#39;</span><span class="p">)</span>
+             <span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">img</span>
+<span class="n">img_path</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;../images/model-result/A-100-1.png&#39;</span><span class="p">,</span><span class="s1">&#39;../images/tradition/100-1-histogram-equalization.png&#39;</span>
+            <span class="p">]</span>
+<span class="c1"># 加载并显示每个子图的PNG图片</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">position</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">positions</span><span class="p">):</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">img_path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
 
+<span class="c1"># 调整子图之间的间距和外边距</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">hspace</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">margins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">method_v2</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+<span class="c1"># 展示图形</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/9cac4e176d18f71932abc3d34f626278cd26b5fed5597220dfd60d507551a3a4.png" src="../_images/9cac4e176d18f71932abc3d34f626278cd26b5fed5597220dfd60d507551a3a4.png" />
+</div>
+</div>
+<section id="clahe">
+<h2><span class="section-number">6.1. </span>clahe<a class="headerlink" href="#clahe" title="Permalink to this heading">#</a></h2>
+<p>通过 <code class="docutils literal notranslate"><span class="pre">cv2.createCLAHE</span></code> 函数指定了 <code class="docutils literal notranslate"><span class="pre">clipLimit</span></code> 参数为<code class="docutils literal notranslate"><span class="pre">2.0</span></code>，这个参数控制了对比度限制的程度。</p>
+<p>还通过 <code class="docutils literal notranslate"><span class="pre">tileGridSize</span></code> 参数设置均衡化操作的区域大小，默认为(8, 8)。</p>
+<p>效果也一般，需要手动去试参数</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">method_v2</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
 
     <span class="c1"># Less &#39;clipLimit&#39; value less effect</span>
@@ -498,8 +632,27 @@ document.write(`
 
     <span class="k">return</span> <span class="n">img</span>
 
-
-<span class="k">def</span> <span class="nf">method_v3</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;../images/model-result/A-100-1.png&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">img_output</span> <span class="o">=</span> <span class="n">method_v2</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_output</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;../images/tradition/100-1-clahe.png&#39;</span><span class="p">,</span> <span class="n">img_output</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+<img alt="../_images/edad6fcef0fe6902059530321e79208efabee2a525af85e6682edd143ea71cda.png" src="../_images/edad6fcef0fe6902059530321e79208efabee2a525af85e6682edd143ea71cda.png" />
+</div>
+</div>
+</section>
+<section id="gamma">
+<h2><span class="section-number">6.2. </span>GAMMA<a class="headerlink" href="#gamma" title="Permalink to this heading">#</a></h2>
+<p>基于灰度图像的增强方法，主要通过Gamma校正来调整图像的亮度和对比度。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">method_v3</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
 
     <span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.6</span>
@@ -510,8 +663,27 @@ document.write(`
 
     <span class="k">return</span> <span class="n">img</span>
 
-
-<span class="k">def</span> <span class="nf">create_clahe_grid_v1</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;../images/model-result/A-100-1.png&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">img_output</span> <span class="o">=</span> <span class="n">method_v3</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_output</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;../images/tradition/100-1-gamma.png&#39;</span><span class="p">,</span> <span class="n">img_output</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+<img alt="../_images/21f311a16c52e1febcf3c6eae2e39aec01fbae4b24454d9576a19a9d4116de60.png" src="../_images/21f311a16c52e1febcf3c6eae2e39aec01fbae4b24454d9576a19a9d4116de60.png" />
+</div>
+</div>
+</section>
+<section id="clahe-grid">
+<h2><span class="section-number">6.3. </span>CLAHE-grid<a class="headerlink" href="#clahe-grid" title="Permalink to this heading">#</a></h2>
+<p>使用不同网格尺寸的CLAHE对象对灰度图像进行增强。通过在不同尺寸的网格上进行CLAHE处理，可以产生多个增强后的图像，从而突出显示不同尺寸下的图像细节和对比度变化。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_clahe_grid_v1</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
 
     <span class="n">grid_size</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
@@ -527,8 +699,29 @@ document.write(`
 
     <span class="k">return</span> <span class="n">img</span>
 
-
-<span class="k">def</span> <span class="nf">create_clahe_grid_v2</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;../images/model-result/A-100-1.png&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">img_output</span> <span class="o">=</span> <span class="n">create_clahe_grid_v1</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_output</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;../images/tradition/100-1-clahe-grid.png&#39;</span><span class="p">,</span> <span class="n">img_output</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+<img alt="../_images/1a14981ea21afff75e56d99b345da5aabff91f448553b50b875f6be08f3d18fe.png" src="../_images/1a14981ea21afff75e56d99b345da5aabff91f448553b50b875f6be08f3d18fe.png" />
+</div>
+</div>
+</section>
+<section id="clahe-grid-v2">
+<h2><span class="section-number">6.4. </span>CLAHE-grid-v2<a class="headerlink" href="#clahe-grid-v2" title="Permalink to this heading">#</a></h2>
+<p>使用不同对比度限制值的CLAHE对象对灰度图像进行增强。
+通过在不同对比度限制下进行CLAHE处理，产生多个增强后的图像。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_clahe_grid_v2</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
 
     <span class="n">clip_limit</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">]</span>
@@ -544,8 +737,28 @@ document.write(`
 
     <span class="k">return</span> <span class="n">img</span>
 
-
-<span class="k">def</span> <span class="nf">create_gamma_correction_grid_v1</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;../images/model-result/A-100-1.png&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">img_output</span> <span class="o">=</span> <span class="n">create_clahe_grid_v2</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_output</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;../images/tradition/100-1-clahe-grid-v2.png&#39;</span><span class="p">,</span> <span class="n">img_output</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+<img alt="../_images/d06ab5a454b8fe484668d1116c46f4115e925fe50deb4474bc3d35e82bd4dcbd.png" src="../_images/d06ab5a454b8fe484668d1116c46f4115e925fe50deb4474bc3d35e82bd4dcbd.png" />
+</div>
+</div>
+</section>
+<section id="gamma-grid">
+<h2><span class="section-number">6.5. </span>gamma-grid<a class="headerlink" href="#gamma-grid" title="Permalink to this heading">#</a></h2>
+<p>使用不同gamma参数值对灰度图像进行伽马校正。通过调整图像亮度，产生多个增强后的图像。</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_gamma_correction_grid_v1</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
 
     <span class="n">res_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -560,14 +773,12 @@ document.write(`
     <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">(</span><span class="n">res_list</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">img</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">img_1</span> <span class="o">=</span> <span class="n">create_clahe_grid_v2</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
-<span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;../images/tradition/100-1-clahe_grid_v2.png&#39;</span><span class="p">,</span> <span class="n">img_1</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;../images/model-result/A-100-1.png&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">img_output</span> <span class="o">=</span> <span class="n">create_gamma_correction_grid_v1</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_output</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+<span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;../images/tradition/100-1-gamma-grid.png&#39;</span><span class="p">,</span> <span class="n">img_output</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -575,8 +786,17 @@ document.write(`
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
 </pre></div>
 </div>
+<img alt="../_images/5b1408fa5f9c4097e4edb10ecc0f881d8213c3767e97a31641330e137eda0f8c.png" src="../_images/5b1408fa5f9c4097e4edb10ecc0f881d8213c3767e97a31641330e137eda0f8c.png" />
 </div>
 </div>
+</section>
+<section id="id3">
+<h2><span class="section-number">6.6. </span>总结<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<blockquote>
+<div><p>可以发现传统方法的效果很大程度上取决于参数，比如CLAHE的窗口大小和剪切值。
+而基于深度学习的方法就无需认为调参，就会有更好的效果。</p>
+</div></blockquote>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -633,6 +853,33 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">5. 传统的去阴影方法</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#background-subtraction">5.1. 图像背景差分（Background Subtraction）</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">6. 直方图均衡化</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe">6.1. clahe</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gamma">6.2. GAMMA</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe-grid">6.3. CLAHE-grid</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe-grid-v2">6.4. CLAHE-grid-v2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gamma-grid">6.5. gamma-grid</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">6.6. 总结</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
               
             
           </div>

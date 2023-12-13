@@ -174,6 +174,7 @@ const thebe_selector_output = ".output, .cell_output"
 </li>
 <li class="toctree-l1"><a class="reference internal" href="train-test-model.html">4. 训练-测试 模型</a></li>
 <li class="toctree-l1"><a class="reference internal" href="traditional-method.html">5. 传统的去阴影方法</a></li>
+
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Author</span></p>
 <ul class="nav bd-sidenav">
@@ -377,7 +378,6 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-of-myst-markdown">2.2. use of myst markdown</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#math">2.3. MATH</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citations">2.4. Citations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ssss">2.5. ssss</a></li>
 </ul>
             </nav>
         </div>
@@ -433,7 +433,7 @@ Tab 2 title</label><div class="sd-tab-content docutils">
 <p><span class="caption-number">Fig. 2.1 </span><span class="caption-text">My figure title.</span><a class="headerlink" href="#my-fig-ref" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
-<img src="../images/logo.png" alt="fishy" width="200px">
+<a class="reference internal image-reference" href="../_images/logo.png"><img alt="fishy" src="../_images/logo.png" style="width: 200px;" /></a>
 <aside class="sidebar">
 <p class="sidebar-title">My sidebar title</p>
 <p>My sidebar content</p>
@@ -465,30 +465,16 @@ w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}
 </dd>
 </dl>
 </div>
+<p>缩放点积注意力是一种注意力机制，其中点积按 <span class="math notranslate nohighlight">\(\sqrt{d_k}\)</span> 比例缩小.</p>
+<p>如果我们有 a query <span class="math notranslate nohighlight">\(Q\)</span>, a key <span class="math notranslate nohighlight">\(K\)</span> and a value <span class="math notranslate nohighlight">\(V\)</span> ，计算attention的公式为:</p>
+<div class="math notranslate nohighlight">
+\[
+\text{Attention}(Q,K,V)=\text{softmax}\biggl(\frac{QK^T}{\sqrt{d_k}}\biggr)V
+\]</div>
+<p>之后我们假设 <span class="math notranslate nohighlight">\(q\)</span> 和 <span class="math notranslate nohighlight">\(k\)</span> 是 <span class="math notranslate nohighlight">\(d_k\)</span>-dimensional 向量其分量是均值为0，方差为1的独立随机变量，那么它们的点积为<span class="math notranslate nohighlight">\(q\cdot k=\sum_{i=1}^{dk}u_iv_i\)</span> 均值为 0 同时方差为
+<span class="math notranslate nohighlight">\(d_k\)</span>.</p>
+<p>因为我们希望这些值的方差为1, 所以将计算结果除以 <span class="math notranslate nohighlight">\(\sqrt{d_k}\)</span></p>
 </section>
-<section id="ssss">
-<h2><span class="section-number">2.5. </span>ssss<a class="headerlink" href="#ssss" title="Permalink to this heading">#</a></h2>
-<p>sdasda</p>
-<select onchange="changeImage(event)">
-  <option value="image1">图片1</option>
-  <option value="image2">图片2</option>
-  <option value="image3">图片3</option>
-</select>
-<img id="imageToShow" src="">
-<script>
-function changeImage(event) {
-  var selectedValue = event.target.value;
-  var imageToChange = document.getElementById("imageToShow");
-  
-  if (selectedValue === "image1") {
-    imageToChange.src = "../images/model-result/A-100-1.png";
-  } else if (selectedValue === "image2") {
-    imageToChange.src = "../images/model-result/B-100-1.png";
-  } else if (selectedValue === "image3") {
-    imageToChange.src = "../images/model-result/C-100-1.png";
-  }
-}
-</script></section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -558,7 +544,6 @@ function changeImage(event) {
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-of-myst-markdown">2.2. use of myst markdown</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#math">2.3. MATH</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#citations">2.4. Citations</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ssss">2.5. ssss</a></li>
 </ul>
   </nav></div>
 

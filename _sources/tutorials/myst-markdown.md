@@ -78,30 +78,15 @@ You can also cite references that are stored in a `bibtex` file. For example,
 ```{bibliography}
 ```
 
-## ssss
+缩放点积注意力是一种注意力机制，其中点积按 $\sqrt{d_k}$ 比例缩小.
 
-sdasda
+如果我们有 a query $Q$, a key $K$ and a value $V$ ，计算attention的公式为:
 
+$$
+\text{Attention}(Q,K,V)=\text{softmax}\biggl(\frac{QK^T}{\sqrt{d_k}}\biggr)V
+$$
 
-<select onchange="changeImage(event)">
-  <option value="image1">图片1</option>
-  <option value="image2">图片2</option>
-  <option value="image3">图片3</option>
-</select>
-
-<img id="imageToShow" src="">
-
-<script>
-function changeImage(event) {
-  var selectedValue = event.target.value;
-  var imageToChange = document.getElementById("imageToShow");
-  
-  if (selectedValue === "image1") {
-    imageToChange.src = "../images/model-result/A-100-1.png";
-  } else if (selectedValue === "image2") {
-    imageToChange.src = "../images/model-result/B-100-1.png";
-  } else if (selectedValue === "image3") {
-    imageToChange.src = "../images/model-result/C-100-1.png";
-  }
-}
-</script>
+之后我们假设 $q$ 和 $k$ 是 $d_k$-dimensional 向量其分量是均值为0，方差为1的独立随机变量，那么它们的点积为$q\cdot k=\sum_{i=1}^{dk}u_iv_i$ 均值为 0 同时方差为
+ $d_k$.
+ 
+因为我们希望这些值的方差为1, 所以将计算结果除以 $\sqrt{d_k}$
