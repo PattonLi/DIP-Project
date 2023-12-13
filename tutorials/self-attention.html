@@ -165,9 +165,9 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="notebooks.html">1. code</a></li>
-<li class="toctree-l1"><a class="reference internal" href="myst-markdown.html">2. MystMarkdown Usage</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="pre-knowledge.html">3. SIA核心：self attention</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="paper.html">1. 论文精读</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html">2. 代码介绍</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="pre-knowledge.html">3. SIA核心：attention</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="channel-attention.html">3.1. CA</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">3.2. 注意力机制</a></li>
 </ul>
@@ -179,6 +179,7 @@ const thebe_selector_output = ".output, .cell_output"
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Author</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../author/author.html">1. 小组成员</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../author/interactive-explain.html">2. 交互式说明</a></li>
 </ul>
 
     </div>
@@ -462,11 +463,14 @@ document.write(`
 <h2><span class="section-number">3.2.1. </span>缩放点积注意力（scaled dot product）<a class="headerlink" href="#scaled-dot-product" title="Permalink to this heading">#</a></h2>
 <p>缩放点积注意力是一种注意力机制，其中点积按 <span class="math notranslate nohighlight">\(\sqrt{d_k}\)</span> 比例缩小.</p>
 <p>如果我们有 a query <span class="math notranslate nohighlight">\(Q\)</span>, a key <span class="math notranslate nohighlight">\(K\)</span> and a value <span class="math notranslate nohighlight">\(V\)</span> ，计算attention的公式为:</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
 <div class="math notranslate nohighlight">
 \[
 \text{Attention}(Q,K,V)=\text{softmax}\biggl(\frac{QK^T}{\sqrt{d_k}}\biggr)V
 \]</div>
-<p>之后我们假设 <span class="math notranslate nohighlight">\(q\)</span> 和 <span class="math notranslate nohighlight">\(k\)</span> 是 <span class="math notranslate nohighlight">\(d_k\)</span>-dimensional 向量其分量是均值为0，方差为1的独立随机变量，那么它们的点积为<span class="math notranslate nohighlight">\(q\cdot k=\sum_{i=1}^{dk}u_iv_i\)</span> 均值为 0 同时方差为
+</div>
+<p>我们假设 <span class="math notranslate nohighlight">\(q\)</span> 和 <span class="math notranslate nohighlight">\(k\)</span> 是 <span class="math notranslate nohighlight">\(d_k\)</span>-dimensional 向量，其分量是均值为0，方差为1的独立随机变量，那么它们的点积为<span class="math notranslate nohighlight">\(q\cdot k=\sum_{i=1}^{dk}u_iv_i\)</span> 均值为 0 同时方差为
 <span class="math notranslate nohighlight">\(d_k\)</span>.</p>
 <p>因为我们希望这些值的方差为1, 所以将计算结果除以 <span class="math notranslate nohighlight">\(\sqrt{d_k}\)</span></p>
 <figure class="align-center" id="my-fig-ref">
@@ -545,17 +549,19 @@ Attention Shape: torch.Size([2, 3, 3])
 </section>
 <section id="self-attention">
 <h2><span class="section-number">3.2.3. </span>自注意力（self attention）<a class="headerlink" href="#self-attention" title="Permalink to this heading">#</a></h2>
-<p>Self Attention在2017年由Google机器翻译团队发表的《Attention is All You Need》中被提出，它完全抛弃了RNN和CNN等网络结构，而仅采用新提出的Self Attention机制来处理机器翻译任务，并且取得了很好的效果。</p>
+<blockquote>
+<div><p>Self Attention在2017年由Google机器翻译团队发表的《Attention is All You Need》中被提出，它完全抛弃了RNN和CNN等网络结构，而仅采用新提出的Self Attention机制来处理机器翻译任务，并且取得了很好的效果。</p>
+</div></blockquote>
 <p>在Encoder-Decoder框架下，广义的attention机制中的输入Source和输出Target内容是不一样的，以英-中机器翻译为例，Source是英文句子，Target是对应的翻译出的中文句子，Attention机制发生在Target的元素和Source中的所有元素之间。此时Query来自Target，Key和Value来自Source。</p>
-<p>而Self Attention顾名思义，指不是Target和Source之间做Attend，而是Source内部元素之间或者Target内部元素之间发生的Attention机制，此时Query、Key和Value都来自Target或Source。</p>
+<p>而Self Attention顾名思义，指<strong>不是Target和Source之间做Attend，而是Source内部元素之间或者Target内部元素之间发生的Attention机制，此时Query、Key和Value都来自Target或Source。</strong></p>
 <figure class="align-center" id="aaa">
 <a class="reference internal image-reference" href="../_images/muti-head-attention.png"><img alt="../_images/muti-head-attention.png" src="../_images/muti-head-attention.png" style="width: 300px;" /></a>
 <figcaption>
 <p><span class="caption-number">Fig. 3.3 </span><span class="caption-text">Self attention.</span><a class="headerlink" href="#aaa" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
-<p><a class="reference external" href="https://paperswithcode.com/method/scaled">可以看看这个链接</a></p>
-<p>这里有一个jpg展示了这个流程</p>
+<p><a class="reference external" href="https://paperswithcode.com/method/scaled">参考链接</a></p>
+<p>这里有一个GIF展示了这个流程</p>
 <figure class="align-center" id="id3">
 <a class="reference internal image-reference" href="../_images/SF.gif"><img alt="../_images/SF.gif" src="../_images/SF.gif" style="width: 600px;" /></a>
 <figcaption>

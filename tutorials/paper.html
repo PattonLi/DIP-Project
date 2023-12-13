@@ -1,0 +1,862 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>1. 论文精读 &#8212; DIP-shadow removing</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/paper';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2. 代码介绍" href="code.html" />
+    <link rel="prev" title="Welcome to your Jupyter Book" href="../intro.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="DIP-shadow removing - Home"/>
+    <script>document.write(`<img src="../_static/logo.png" class="logo__image only-dark" alt="DIP-shadow removing - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">1. 论文精读</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html">2. 代码介绍</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pre-knowledge.html">3. SIA核心：attention</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="channel-attention.html">3.1. CA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="self-attention.html">3.2. 注意力机制</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="train-test-model.html">4. 训练-测试 模型</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traditional-method.html">5. 传统的去阴影方法</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Author</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../author/author.html">1. 小组成员</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../author/interactive-explain.html">2. 交互式说明</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/PattonLi/DIP-Project" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/PattonLi/DIP-Project/issues/new?title=Issue%20on%20page%20%2Ftutorials/paper.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/tutorials/paper.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>论文精读</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">1.1. 前言科普</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">1.1.1. 什么是阴影去除</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">1.1.2. 专业术语科普</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1.1.2.1. 模型相关术语优化整理</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">1.1.2.2. 图像去噪相关术语优化整理</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">1.1.3. 传统方法去除阴影</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1.1.3.1. 传统方法概述</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">1.1.3.2. 其他方法的弱点</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">1.2. 论文解读</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">1.2.1. 该方法的创新点及贡献</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#retinex">1.2.2. 基于retinex的阴影模型</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shadowformer">1.2.3. 基于变压器的网络——ShadowFormer</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">1.2.3.1. 总体架构</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">1.2.3.2. 输入部分详解</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">1.2.3.3. 线性投影部分详解</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">1.2.3.4. 编码器和解码器详解</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sim">1.2.3.5. 阴影交互模块SIM详解</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1><span class="section-number">1. </span>论文精读<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
+<p><span style="font-size: 30pt; color: purple">ShadowFormer: Global Context Helps Shadow Removal</span></p>
+<section id="id2">
+<h2><span class="section-number">1.1. </span>前言科普<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<section id="id3">
+<h3><span class="section-number">1.1.1. </span>什么是阴影去除<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<p>阴影往往会给图像带来不必要的复杂性和混淆，影响图像的视觉质量和内容理解。</p>
+<p>阴影去除（Shadow Removal）是一种<code class="docutils literal notranslate"><span class="pre">图像处理技术</span></code>，旨在从图像中消除或减弱由光照条件引起的阴影。阴影去除的目标是通过分析图像中的<code class="docutils literal notranslate"><span class="pre">颜色、亮度和纹理</span></code>等特征，将阴影部分与其他图像区域进行区分，并尽可能恢复原始图像中的信息。</p>
+</section>
+<section id="id4">
+<h3><span class="section-number">1.1.2. </span>专业术语科普<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<section id="id5">
+<h4><span class="section-number">1.1.2.1. </span>模型相关术语优化整理<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h4>
+<p><strong>1.Transformer</strong></p>
+<p>概述: Transformer是一种深度学习模型，于2017年提出，主要用于处理序列数据，特别在自然语言处理（NLP）领域表现卓越。
+自注意力机制: 这是Transformer的核心特性，它使得模型能够在序列的不同位置之间建立直接的依赖关系，有效处理长距离依赖问题。
+查询、键、值: 对于序列中的每个元素，模型都会生成三个向量：查询（Q），键（K）和值（V）。
+注意力权重: 通过计算查询和键之间的相似度来分配给值的注意力权重。
+加权求和: 最后，将注意力权重应用于值，对其进行加权求和，以得到每个位置的输出。
+多头注意力: 通过并行运用多个注意力机制，多头注意力能够让模型在不同的表示子空间中捕获序列的不同特征。</p>
+<p><strong>2.注意力机制</strong></p>
+<p>概述: 一种让模型动态聚焦于输入数据中最重要部分的技术，适用于多个领域，包括NLP和计算机视觉。
+自注意力: 一种特别的注意力机制，允许模型在同一序列内部的不同位置之间建立联系。
+优势: 注意力机制具有灵活性、高效的并行处理能力和增强的模型解释性。</p>
+<p><strong>3.编码器与解码器</strong></p>
+<p>编码器: 在Transformer架构中处理输入序列，将其转化为中间表示。
+解码器: 使用编码器的输出以及先前的输出来生成最终的输出序列。
+图像处理相关术语优化整理</p>
+<p><strong>4.MLP（多层感知机）</strong></p>
+<p>概述: 多层感知机（MLP）是一种基础的神经网络结构，由多个层次的感知器（简单的神经元模型）构成。它通过一个或多个隐藏层来学习数据的非线性特征，广泛应用于各种机器学习任务中。</p>
+<p><strong>5.卷积神经网络（CNN）</strong></p>
+<p>概述: 卷积神经网络（CNN）是一种专门用于处理具有网格结构数据（如图像）的深度学习模型。它通过卷积层来提取数据的空间特征，非常适合于图像识别、图像分类等视觉任务。
+接受域（Receptive Field）: 接受域是指在CNN中，输出特征图上的一个元素对应的原始输入数据的区域大小。它是理解和分析卷积神经网络的重要概念，反映了网络对局部特征的敏感性。</p>
+</section>
+<section id="id6">
+<h4><span class="section-number">1.1.2.2. </span>图像去噪相关术语优化整理<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h4>
+<p><strong>1.图像超分辨率:</strong></p>
+<p>通过算法从低分辨率图像中生成高分辨率图像的过程。</p>
+<p><strong>2.图像去模糊:</strong></p>
+<p>从模糊图像中恢复清晰图像的技术，涉及去除运动模糊或焦点模糊。</p>
+<p><strong>3.峰值信噪比 (PSNR):</strong></p>
+<p>衡量图像质量的指标，用于比较原始图像和压缩或重构后图像的相似度。</p>
+<p><strong>4.伪影:</strong></p>
+<p>图像处理中由算法引起的非原始图像的任何异常或不期望的特征。</p>
+<p><strong>5.照度与照度一致性:</strong></p>
+<p>照度: 光照强度在特定表面上的分布，以勒克斯（lux）度量。
+照度一致性: 在图像处理中指去除图像中的阴影时保持光照强度在空间上的连续性和一致性。</p>
+<p><strong>6.上采样与下采样</strong></p>
+<p>上采样: 增加图像的像素数，使图像变得更大，通常通过插值算法实现。</p>
+<p>下采样: 减少图像的像素数，使图像变得更小，通常通过丢弃像素或合并邻近像素来实现。</p>
+</section>
+</section>
+<section id="id7">
+<h3><span class="section-number">1.1.3. </span>传统方法去除阴影<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h3>
+<section id="id8">
+<h4><span class="section-number">1.1.3.1. </span>传统方法概述<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h4>
+<p><strong>1.物理模型方法：</strong></p>
+<p>这种方法基于对光照和阴影生成机制的物理理解。它通常涉及到识别图像中的光照条件和表面特性，然后相应地调整像素值以减少阴影效果。</p>
+<p><strong>2.图像分割和分类：</strong></p>
+<p>这种方法通过图像分割技术将阴影区域与非阴影区域分开。然后，可以对这些区域分别进行处理。</p>
+<p><strong>3.频域方法：</strong></p>
+<p>这种方法涉及到将图像从空间域转换到频域（例如使用傅里叶变换），在频域中处理阴影，然后再转换回空间域。这种方法可以帮助识别和去除图像中的周期性阴影模式。</p>
+<p><strong>4.修复和填充技术：</strong></p>
+<p>在某些情况下，去除阴影可能会在图像中留下“空白”区域。这种情况下可以使用图像修复技术，如Inpainting，来填补这些区域，使图像看起来更加自然和连贯。</p>
+<p><strong>5.机器学习和深度学习：</strong></p>
+<p>近年来，基于机器学习的方法，特别是深度学习，已经在图像去阴影方面取得了显著的进展。使用如卷积神经网络（CNN）的模型可以学习从大量数据中识别和去除阴影的模式。</p>
+</section>
+<section id="id9">
+<h4><span class="section-number">1.1.3.2. </span>其他方法的弱点<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h4>
+<ol class="arabic simple">
+<li><p>现有的阴影去除方法大多集中在局部处理阴影和非阴影区域，导致阴影边界周围存在严重的伪影，并且阴影区域与非阴影区域之间的照明不一致。</p></li>
+<li><p>部分方法在一定程度上减轻了边界痕迹，但却需要多个具有巨大计算开销的后处理模块，对算力要求高。</p></li>
+<li><p>许多深阴影去除算法都无法保持恢复图像的照度和颜色一致性。</p></li>
+</ol>
+</section>
+</section>
+</section>
+<section id="id10">
+<h2><span class="section-number">1.2. </span>论文解读<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h2>
+<section id="id11">
+<h3><span class="section-number">1.2.1. </span>该方法的创新点及贡献<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>扩展了经典的 <code class="docutils literal notranslate"><span class="pre">Retinex</span></code> 阴影模型来模拟阴影退化，利用<code class="docutils literal notranslate"><span class="pre">非阴影区信息</span></code>帮助阴影区域的恢复</p></li>
+<li><p>提出了一种基于<code class="docutils literal notranslate"><span class="pre">多尺度通道注意</span></code>框架的新的<code class="docutils literal notranslate"><span class="pre">单阴影去除变压器</span> <span class="pre">(ShadowFormer)</span></code></p></li>
+<li><p>引入具有<code class="docutils literal notranslate"><span class="pre">阴影相互作用注意力</span> <span class="pre">(SIA)</span></code>的阴影相互作用模块 (SIM)，有效利用阴影区域和非阴影区域在空间和通道维度上的<code class="docutils literal notranslate"><span class="pre">全局上下文相关性</span></code></p></li>
+</ol>
+</section>
+<section id="retinex">
+<h3><span class="section-number">1.2.2. </span>基于retinex的阴影模型<a class="headerlink" href="#retinex" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>经典原模型：</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{I}_{s}=\mathbf{I}_{m}\odot\mathbf{I}_{s}+(1-\mathbf{I}_{m})\odot\mathbf{I}_{ns}
+\]</div>
+<blockquote>
+<div><p>其中<span class="math notranslate nohighlight">\(\mathbf{I}_{ns}\)</span>和<span class="math notranslate nohighlight">\(\mathbf{I}_{m}\)</span>分别表示非阴影区域，掩码表示阴影区域。<span class="math notranslate nohighlight">\(\odot\)</span>表示逐元素乘法</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>引入的模型：</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{I}_{sf}=\mathbf{L}_{sf}\odot \mathbf{R}_{o}
+\]</div>
+<ul class="simple">
+<li><p>基于人类的感知，图像<span class="math notranslate nohighlight">\(\mathbf{I}\)</span>可以分解为照度<span class="math notranslate nohighlight">\(\mathbf{L}\)</span>和反射率<span class="math notranslate nohighlight">\(\mathbf{R}\)</span>
+引入上述公式后，改进后的模型为：</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+\mathbf{I}_{s}=\mathbf{I}_{m}\odot\mathbf{L}_{s}\odot\mathbf{R}+(1-\mathbf{I}_{m})\odot\mathbf{L}_{ns}\odot\mathbf{R}
+\]</div>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(\mathbf{I}_{s}、\mathbf{I}_{ns}和\mathbf{I}_{sf}\)</span>分别表示阴影区域、非阴影区域、无阴影图像的光照</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>基于此模型的改进，我们可以得出：</p>
+<ol class="arabic simple">
+<li><p>虽然光照退化在阴影和非阴影区域不同，但底层图像却拥有相同的照度。阴影和非阴影区域的照度一致性不可忽略，否则会导致恢复图像的照度在空间上是变化的</p></li>
+<li><p>阴影区域和非阴影区域都捕获相同的底层R，两个区域之间有很强的全局上下文关联性。</p></li>
+</ol>
+</li>
+<li><p>基于此启发：</p>
+<ol class="arabic simple">
+<li><p>模型的 receptive feld 应该尽可能大，以捕获全局信息。</p></li>
+<li><p>来自非阴影区域的光照信息是阴影区域恢复的重要先验信息。</p></li>
+</ol>
+</li>
+</ul>
+</section>
+<section id="shadowformer">
+<h3><span class="section-number">1.2.3. </span>基于变压器的网络——ShadowFormer<a class="headerlink" href="#shadowformer" title="Permalink to this heading">#</a></h3>
+<section id="id12">
+<h4><span class="section-number">1.2.3.1. </span>总体架构<a class="headerlink" href="#id12" title="Permalink to this heading">#</a></h4>
+<figure class="align-center" id="id16">
+<a class="reference internal image-reference" href="../_images/1.png"><img alt="../_images/1.png" src="../_images/1.png" style="width: 1000px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 1.1 </span><span class="caption-text">模型结构</span><a class="headerlink" href="#id16" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<ul class="simple">
+<li><p><strong>输入</strong>：网络接收两个输入，原始影子图像 <strong>I<sub>s</sub></strong> 和对应的掩码图像 <strong>I<sub>m</sub></strong> ，掩码图像用于区分影子区域和非影子区域。</p></li>
+<li><p><strong>线性投影</strong>（Linear Projection）：进行线性投影，将输入数据映射到一个低维度的特征空间或进行特征提取。</p></li>
+<li><p><strong>编码器</strong>：利用通道注意力变换器(encoder)基于原始影子图像提取层次化信息。编码器通过通道注意力（Channel Attention, CA）模块，可以专注于影像的特定通道，提取重要特征。</p></li>
+<li><p><strong>阴影交互模块(SIM)</strong>：SIM利用非影子区域和影子区域之间的上下文信息，通过空间和通道维度帮助恢复影子区域。</p></li>
+<li><p><strong>解码器</strong>：解码器使用一系列通道注意力模块，根据编码器提供的层次化信息重构无影图像。</p></li>
+<li><p><strong>输出</strong>：经过编码器、SIM和解码器的处理后，得到的无影图像 <strong>I</strong> 。</p></li>
+</ul>
+</section>
+<section id="id13">
+<h4><span class="section-number">1.2.3.2. </span>输入部分详解<a class="headerlink" href="#id13" title="Permalink to this heading">#</a></h4>
+<figure class="align-center" id="id17">
+<a class="reference internal image-reference" href="../_images/2.png"><img alt="../_images/2.png" src="../_images/2.png" style="width: 1000px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 1.2 </span><span class="caption-text">输入</span><a class="headerlink" href="#id17" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<ol class="arabic simple">
+<li><p><span class="math notranslate nohighlight">\(I_s\)</span>（阴影图像）：</p></li>
+</ol>
+<p>这是网络的输入，即一张包含阴影的图片。</p>
+<div class="note admonition">
+<p class="admonition-title">code</p>
+<p>对应模型函数（代码）：的<code class="docutils literal notranslate"><span class="pre">forward</span></code> 的输入参数 <code class="docutils literal notranslate"><span class="pre">x</span></code>，即网络的输入图像。</p>
+</div>
+<ol class="arabic simple" start="2">
+<li><p><span class="math notranslate nohighlight">\(I_m\)</span>（掩模图像）：</p></li>
+</ol>
+<p>这是一个二值图像，用于标识原始图像中哪些区域是阴影区域，哪些是非阴影区域。阴影区域通常用较暗的像素表示。</p>
+<div class="note admonition">
+<p class="admonition-title">code</p>
+<p>对应于模型函数（代码）： <code class="docutils literal notranslate"><span class="pre">forward</span></code> 的输入参数 <code class="docutils literal notranslate"><span class="pre">xm</span></code>。这个掩模用于指示输入图像中哪些部分属于阴影。</p>
+</div>
+</section>
+<section id="id14">
+<h4><span class="section-number">1.2.3.3. </span>线性投影部分详解<a class="headerlink" href="#id14" title="Permalink to this heading">#</a></h4>
+<figure class="align-center" id="id18">
+<a class="reference internal image-reference" href="../_images/3.png"><img alt="../_images/3.png" src="../_images/3.png" style="width: 1000px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 1.3 </span><span class="caption-text">线性投影</span><a class="headerlink" href="#id18" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>这是网络的第一步，它将输入图像的每个像素点转换成一系列数字（这个过程称为特征嵌入），使得网络能够更好地处理这些数据。</p>
+<div class="note admonition">
+<p class="admonition-title">code</p>
+<p><code class="docutils literal notranslate"><span class="pre">LinearProjection</span></code> 在代码中通过 <code class="docutils literal notranslate"><span class="pre">InputProj</span></code> 类实现，它使用 <code class="docutils literal notranslate"><span class="pre">nn.Conv2d</span></code> 来转换输入图像的像素到高维特征空间。</p>
+</div>
+</section>
+<section id="id15">
+<h4><span class="section-number">1.2.3.4. </span>编码器和解码器详解<a class="headerlink" href="#id15" title="Permalink to this heading">#</a></h4>
+<figure class="align-center" id="id19">
+<a class="reference internal image-reference" href="../_images/4.png"><img alt="../_images/4.png" src="../_images/4.png" style="width: 1000px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 1.4 </span><span class="caption-text">ENCODER DECODER</span><a class="headerlink" href="#id19" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p><strong>编码器和解码器中的信道注意模块（CA）：</strong></p>
+<figure class="align-center" id="id20">
+<a class="reference internal image-reference" href="../_images/5.png"><img alt="../_images/5.png" src="../_images/5.png" style="width: 150px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 1.5 </span><span class="caption-text">CA模块</span><a class="headerlink" href="#id20" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>每个编码器和解码器由<code class="docutils literal notranslate"><span class="pre">L个CA模块</span></code>（如图所示）组成，以叠加多尺度全局特征。每个CA模块包括两个CA块，以及编码器中的下采样层或解码器中的上采样层。 CA块依次通过CA压缩空间信息，并通过前馈MLP捕获远程相关性。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{gathered}
+\mathbf{\tilde{X}}=\mathrm{CA}(\mathrm{LN}(\mathbf{X}))+\mathbf{X} \\
+\hat{\mathbf{X}}=\mathrm{GELU}(\mathrm{MLP}(\mathrm{LN}(\mathbf{X})))+\mathbf{\tilde{X}} 
+\end{gathered}\end{split}\]</div>
+<blockquote>
+<div><p><span class="math notranslate nohighlight">\(\mathrm{LN}\)</span>表示层归一化，<span class="math notranslate nohighlight">\(\mathrm{GELU}\)</span>表示<span class="math notranslate nohighlight">\(\mathrm{GELU}\)</span>激活层，<span class="math notranslate nohighlight">\(\mathrm{MLP}\)</span>表示多层感知器
+经过编码器后的<span class="math notranslate nohighlight">\({L}\)</span>个模块后，我们可以得到层次特征：</p>
+</div></blockquote>
+<div class="math notranslate nohighlight">
+\[
+\{\mathbf{X}_{1},\mathbf{X}_{2},\ldots,\mathbf{X}_{L}\},\mathrm{where~}\mathbf{X}_{L}\in\mathbb{R}^{2^{L}C\times\frac{H}{2^{L}}\times\frac{W}{2^{L}}}
+\]</div>
+<div class="note admonition">
+<p class="admonition-title">编码器对应代码：</p>
+<p>在编码器部分，代码通过多个层级（<code class="docutils literal notranslate"><span class="pre">encoderlayer_0</span></code>、<code class="docutils literal notranslate"><span class="pre">encoderlayer_1</span></code>、<code class="docutils literal notranslate"><span class="pre">encoderlayer_2</span></code>）进行特征提取和下采样。每一层都使用 <code class="docutils literal notranslate"><span class="pre">BasicShadowFormer</span></code> 类，其中包含了自注意力机制和MLP（多层感知机）。</p>
+<p>为了降低空间分辨率，每个编码器层后跟随一个 <code class="docutils literal notranslate"><span class="pre">Downsample</span></code> 模块，用于减少特征图的尺寸。</p>
+</div>
+<div class="note admonition">
+<p class="admonition-title">解码器对应代码：</p>
+<p>解码器部分逆转了编码器的操作。它通过 <code class="docutils literal notranslate"><span class="pre">decoderlayer_0</span></code>、<code class="docutils literal notranslate"><span class="pre">decoderlayer_1</span></code> 和 <code class="docutils literal notranslate"><span class="pre">decoderlayer_2</span></code> 类进行特征上采样和重建。这些层同样使用 <code class="docutils literal notranslate"><span class="pre">BasicShadowFormer</span></code> 类。</p>
+<p>上采样是通过 <code class="docutils literal notranslate"><span class="pre">Upsample</span></code> 类实现的，该类使用转置卷积（<code class="docutils literal notranslate"><span class="pre">nn.ConvTranspose2d</span></code>）来增加特征图的尺寸。</p>
+</div>
+</section>
+<section id="sim">
+<h4><span class="section-number">1.2.3.5. </span>阴影交互模块SIM详解<a class="headerlink" href="#sim" title="Permalink to this heading">#</a></h4>
+<figure class="align-center" id="id21">
+<a class="reference internal image-reference" href="../_images/6.png"><img alt="../_images/6.png" src="../_images/6.png" style="width: 1000px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 1.6 </span><span class="caption-text">SIM模块</span><a class="headerlink" href="#id21" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p><strong>阴影交互模块SIM以及阴影交互注意SIA：</strong></p>
+<figure class="align-center" id="id22">
+<a class="reference internal image-reference" href="../_images/7.png"><img alt="../_images/7.png" src="../_images/7.png" style="width: 1000px;" /></a>
+<figcaption>
+<p><span class="caption-number">Fig. 1.7 </span><span class="caption-text">SIA模块</span><a class="headerlink" href="#id22" title="Permalink to this image">#</a></p>
+</figcaption>
+</figure>
+<p>这是网络的核心部分，它通过分析非阴影区域与阴影区域的联系来提升对阴影区域的理解。这样做可以帮助网络更好地预测阴影区域应该是什么样子，以便在最后的输出中去除阴影。</p>
+<p>左图(b)展示了SIM的详细架构，由两个模块组成，每个模块对应公式如下：</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}\tilde{\mathbf{X}}&amp;=\mathrm{SIA}(\mathrm{CA}(\mathrm{LN}(\mathbf{X})),\mathbf{\Sigma})+\mathbf{X}\\\hat{\mathbf{X}}&amp;=\mathrm{GELU}(\mathrm{MLP}(\mathrm{LN}(\mathbf{X})))+\tilde{\mathbf{X}}\end{aligned}
+\end{split}\]</div>
+<p>SIA部分的具体公式如下：</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{SIA}(\mathbf{X},\mathbf{\Sigma})=\mathrm{softmax}(\frac{\mathbf{Q}\mathbf{K}^T}d)\mathbf{V}[\sigma\mathbf{\Sigma}+(1-\sigma)\mathbf{1}]
+\]</div>
+<p>可见SIA接受两个参数X和sigma：</p>
+<ul class="simple">
+<li><p>参数X来源：</p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/8.png"><img alt="../_images/8.png" src="../_images/8.png" style="width: 650px;" /></a>
+</figure>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/9.png"><img alt="../_images/9.png" src="../_images/9.png" style="width: 300px;" /></a>
+</figure>
+<p>先进行LN层的归一化特征映射，再通过CA来重新加权通道。将重新加权后的特征映射拆分为一系列不重叠的窗口，Q、K和V表示输入特征映射X的投影查询、键和值 。</p>
+<ul class="simple">
+<li><p>参数sigma来源：</p></li>
+</ul>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/10.png"><img alt="../_images/10.png" src="../_images/10.png" style="width: 650px;" /></a>
+</figure>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/11.png"><img alt="../_images/11.png" src="../_images/11.png" style="width: 300px;" /></a>
+</figure>
+<p>池化特征图XL的一个位置向量可以对应输入阴影图像中的一个 patch。同时，对阴影掩码<span class="math notranslate nohighlight">\(I_m\)</span>应用max-pooling到与池化特征图<span class="math notranslate nohighlight">\(X_L\)</span>相同的空间维度中，记为M。根据阴影掩码，阴影图像中的patch可以分为阴影patch和非阴影patch，分别记为1和 0。直观地，我们可以利用非阴影和阴影区域之间的逐块相关图Σ，如下所示：</p>
+<div class="math notranslate nohighlight">
+\[
+\Sigma^{ij}=\mathbf{M}^{i}\oplus\mathbf{M}^{j}\quad\forall i,j
+\]</div>
+<p>将参数X和参数sigma代入SIM部分的公式中，即可获得SIM部分的输出。</p>
+<p>最后，我们应用线性投影来获得残差图像I_r，最后的输出由:</p>
+<div class="math notranslate nohighlight">
+\[
+\mathrm{I=I_s+I_r}
+\]</div>
+<p>得到损失函数如下：</p>
+<div class="math notranslate nohighlight">
+\[
+\mathcal{L}(\mathbf{I}_{gt},\hat{\mathbf{I}})=\begin{Vmatrix}\mathbf{I}_{gt}-\hat{\mathbf{I}}\end{Vmatrix}
+\]</div>
+<div class="note admonition">
+<p class="admonition-title">SIM对应代码：</p>
+<p>SIM 通过 <code class="docutils literal notranslate"><span class="pre">SIMTransformerBlock</span></code> 类实现。这个类中使用了 <code class="docutils literal notranslate"><span class="pre">WindowAttention</span></code> 来实现基于局部窗口的多头自注意力。特别地，它通过循环移位操作（cyclic shift）和掩码处理来实现对不同窗口区域的注意力聚焦。</p>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "PattonLi/DIP-Project",
+            ref: "main",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./tutorials"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../intro.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Welcome to your Jupyter Book</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="code.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><span class="section-number">2. </span>代码介绍</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">1.1. 前言科普</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">1.1.1. 什么是阴影去除</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">1.1.2. 专业术语科普</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1.1.2.1. 模型相关术语优化整理</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">1.1.2.2. 图像去噪相关术语优化整理</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">1.1.3. 传统方法去除阴影</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1.1.3.1. 传统方法概述</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">1.1.3.2. 其他方法的弱点</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">1.2. 论文解读</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">1.2.1. 该方法的创新点及贡献</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#retinex">1.2.2. 基于retinex的阴影模型</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shadowformer">1.2.3. 基于变压器的网络——ShadowFormer</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">1.2.3.1. 总体架构</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">1.2.3.2. 输入部分详解</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">1.2.3.3. 线性投影部分详解</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">1.2.3.4. 编码器和解码器详解</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#sim">1.2.3.5. 阴影交互模块SIM详解</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By lpt, zkm, xxx
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

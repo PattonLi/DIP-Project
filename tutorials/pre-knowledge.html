@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>3. SIA核心：self attention &#8212; DIP-shadow removing</title>
+    <title>3. SIA核心：attention &#8212; DIP-shadow removing</title>
   
   
   
@@ -67,7 +67,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="3.1. CA" href="channel-attention.html" />
-    <link rel="prev" title="2. MystMarkdown Usage" href="myst-markdown.html" />
+    <link rel="prev" title="2. 代码介绍" href="code.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -163,9 +163,9 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="notebooks.html">1. code</a></li>
-<li class="toctree-l1"><a class="reference internal" href="myst-markdown.html">2. MystMarkdown Usage</a></li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">3. SIA核心：self attention</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1"><a class="reference internal" href="paper.html">1. 论文精读</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html">2. 代码介绍</a></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">3. SIA核心：attention</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="channel-attention.html">3.1. CA</a></li>
 <li class="toctree-l2"><a class="reference internal" href="self-attention.html">3.2. 注意力机制</a></li>
 </ul>
@@ -361,7 +361,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>SIA核心：self attention</h1>
+    <h1>SIA核心：attention</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -375,8 +375,12 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="sia-self-attention">
-<h1><span class="section-number">3. </span>SIA核心：self attention<a class="headerlink" href="#sia-self-attention" title="Permalink to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="sia-attention">
+<h1><span class="section-number">3. </span>SIA核心：attention<a class="headerlink" href="#sia-attention" title="Permalink to this heading">#</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>这一段介绍了一些文中用到的相关前置知识</p>
+</div>
 <div class="toctree-wrapper compound">
 </div>
 </section>
@@ -412,12 +416,12 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="myst-markdown.html"
+       href="code.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">2. </span>MystMarkdown Usage</p>
+        <p class="prev-next-title"><span class="section-number">2. </span>代码介绍</p>
       </div>
     </a>
     <a class="right-next"
