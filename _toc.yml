@@ -10,7 +10,6 @@ parts:
     chapters:
       - file: tutorials/paper
       - file: tutorials/code
-      - file: tutorials/myst-markdown
       - file: tutorials/pre-knowledge
         sections:
           - file: tutorials/channel-attention

@@ -7,7 +7,7 @@
 
 ## 代码介绍
 
-```SQL
+```bash
 ShadowFormer-main/
 ├── LICENSE
 ├── README.md
@@ -43,28 +43,34 @@ ShadowFormer-main/
 
 ### model.py主要函数
 
-定义了ShadowFormer模型的架构，以下是其主要组成部分：
+**定义了ShadowFormer模型的架构，以下是其主要组成部分：**
 
+```{tip}
 1. ShadowFormer 类: 这是模型的主体类，其中定义了ShadowFormer网络的结构。
-   1. `__init__` 方法初始化模型，设置各层的参数，如图像大小(`img_size`), 输入通道(`in_chans`), 嵌入维度(`embed_dim`), 层数(`depths`), 多头注意力的头数(`num_heads`), 窗口大小(`win_size`), MLP比率(`mlp_ratio`), 是否使用通道注意力(`qkv_bias`), dropout 率等。
-   2. 定义了编码器(encoder)和解码器(decoder)的多个层，以及输入和输出的投影层。
-   3. `forward` 方法定义了模型的前向传播逻辑，即如何处理输入数据并生成输出。
+   - `__init__` 方法初始化模型，设置各层的参数，如图像大小(`img_size`), 输入通道(`in_chans`), 嵌入维度(`embed_dim`), 层数(`depths`), 多头注意力的头数(`num_heads`), 窗口大小(`win_size`), MLP比率(`mlp_ratio`), 是否使用通道注意力(`qkv_bias`), dropout 率等。
+   - 定义了编码器(encoder)和解码器(decoder)的多个层，以及输入和输出的投影层。
+   - `forward` 方法定义了模型的前向传播逻辑，即如何处理输入数据并生成输出。
 2. 其他辅助层: 如`InputProj`和`OutputProj`类，用于处理模型输入和输出的投影。
 3. 通道注意力(Channel Attention) 和 多层感知机(MLP) 模块: 在模型的多个位置使用，以增强特征表示。
+```
 
 ### train.py 主要函数
 
-用于训练ShadowFormer模型的脚本，以下是其主要功能：
+**用于训练ShadowFormer模型的脚本，以下是其主要功能：**
 
+```{tip}
 1. 训练循环: 包含模型训练的完整流程，从数据加载到反向传播和参数更新。
-   1. 初始化模型、优化器、损失函数等。
-   2. 加载训练数据集，并在每个epoch遍历数据。
-   3. 对于每个batch数据，执行模型的前向传播、计算损失、执行反向传播、更新模型参数。
+   - 初始化模型、优化器、损失函数等。
+   - 加载训练数据集，并在每个epoch遍历数据。
+   - 对于每个batch数据，执行模型的前向传播、计算损失、执行反向传播、更新模型参数。
 2. 模型评估: 在验证集上评估模型性能，通常使用PSNR等指标。
 3. 日志记录: 将训练过程中的损失和性能指标记录到日志文件中。
 4. 模型保存: 在训练过程中，按一定条件保存模型的最佳状态和最新状态。
+```
 
-``` python
+### ShadowFormer核心代码
+
+```python
 class ShadowFormer(nn.Module):
     def __init__(self, img_size=256, in_chans=3,
                  embed_dim=32, depths=[2, 2, 2, 2, 2, 2, 2, 2, 2], num_heads=[1, 2, 4, 8, 16, 16, 8, 4, 2],
@@ -74,9 +80,6 @@ class ShadowFormer(nn.Module):
                  use_checkpoint=False, token_projection='linear', token_mlp='leff', se_layer=True,
                  dowsample=Downsample, upsample=Upsample, **kwargs):
         super().__init__()
-        ```
-        省略了一些初始化操作
-        ```
 
     def forward(self, x, xm, mask=None):
         # Input  Projection

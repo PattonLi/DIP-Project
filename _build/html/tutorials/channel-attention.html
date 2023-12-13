@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>4.1. CA &#8212; DIP-shadow removing</title>
+    <title>3.1. CA &#8212; DIP-shadow removing</title>
   
   
   
@@ -68,8 +68,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/channel-attention';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="4.2. 注意力机制" href="self-attention.html" />
-    <link rel="prev" title="4. SIA核心：self attention" href="pre-knowledge.html" />
+    <link rel="next" title="3.2. 注意力机制" href="self-attention.html" />
+    <link rel="prev" title="3. SIA核心：attention" href="pre-knowledge.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -165,16 +165,15 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="paper.html">1. ShadowFormer: Global Context Helps Shadow Removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="paper.html">1. 论文精读</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code.html">2. 代码介绍</a></li>
-<li class="toctree-l1"><a class="reference internal" href="myst-markdown.html">3. MystMarkdown Usage</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="pre-knowledge.html">4. SIA核心：self attention</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">4.1. CA</a></li>
-<li class="toctree-l2"><a class="reference internal" href="self-attention.html">4.2. 注意力机制</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="pre-knowledge.html">3. SIA核心：attention</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">3.1. CA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="self-attention.html">3.2. 注意力机制</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="train-test-model.html">5. 训练-测试 模型</a></li>
-<li class="toctree-l1"><a class="reference internal" href="traditional-method.html">6. 传统的去阴影方法</a></li>
+<li class="toctree-l1"><a class="reference internal" href="train-test-model.html">4. 训练-测试 模型</a></li>
+<li class="toctree-l1"><a class="reference internal" href="traditional-method.html">5. 传统的去阴影方法</a></li>
 
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Author</span></p>
@@ -443,8 +442,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">4.1.1. 简述</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">4.1.2. 流程图</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3.1.1. 简述</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">3.1.2. 流程图</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">3.1.3. 官方代码</a></li>
 </ul>
             </nav>
         </div>
@@ -457,31 +457,37 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="ca">
-<h1><span class="section-number">4.1. </span>CA<a class="headerlink" href="#ca" title="Permalink to this heading">#</a></h1>
+<h1><span class="section-number">3.1. </span>CA<a class="headerlink" href="#ca" title="Permalink to this heading">#</a></h1>
 <section id="id1">
-<h2><span class="section-number">4.1.1. </span>简述<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
-<p>CA注意力机制是最近提出的一种注意力机制，全面关注特征层的空间信息和通道信息</p>
-<p>该文章的作者认为现有的注意力机制（如CBAM、SE）在求取通道注意力的时候，通道的处理一般是采用全局最大池化/平均池化，这样会损失掉物体的空间信息。作者期望在引入通道注意力机制的同时，引入空间注意力机制，作者提出的注意力机制将位置信息嵌入到了通道注意力中。</p>
-<p>CA注意力的实现如图所示，可以认为分为两个并行阶段：</p>
-<p>将输入特征图分别在为宽度和高度两个方向分别进行全局平均池化，分别获得在宽度和高度两个方向的特征图。假设输入进来的特征层的形状为[C, H, W]，在经过宽方向的平均池化后，获得的特征层shape为[C, H, 1]，此时我们将特征映射到了高维度上；在经过高方向的平均池化后，获得的特征层shape为[C, 1, W]，此时我们将特征映射到了宽维度上。</p>
-<p>然后将两个并行阶段合并，将宽和高转置到同一个维度，然后进行堆叠，将宽高特征合并在一起，此时我们获得的特征层为：[C, 1, H+W]，利用卷积+标准化+激活函数获得特征。</p>
-<p>之后再次分开为两个并行阶段，再将宽高分开成为：[C, 1, H]和[C, 1, W]，之后进行转置。获得两个特征层[C, H, 1]和[C, 1, W]。</p>
-<p>然后利用1x1卷积调整通道数后取sigmoid获得宽高维度上的注意力情况。乘上原有的特征就是CA注意力机制。</p>
-<p>然后，这两个描述符被转发到一个共享网络，以生成我们的频道注意图$<span class="math notranslate nohighlight">\(\mathbf{M}_c\in\mathbb{R}^{C\times1\times1}\)</span><span class="math notranslate nohighlight">\(。C是频道数。该共享网络由多层感知器(MLP)和一个隐藏层组成。为了减少参数开销，将隐藏激活大小设置为\)</span><span class="math notranslate nohighlight">\(\mathbb{R}^{C/r\times1\times1}\)</span>$，其中r为减小比。将共享网络应用于每个描述符后，我们使用元素求和合并输出特征向量。简而言之，通道注意力计算为:</p>
+<h2><span class="section-number">3.1.1. </span>简述<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
+<p>CA注意力机制是2017年提出的一种注意力机制，全面关注特征层的空间信息和通道信息</p>
+<p>该文章的作者认为现有的注意力机制在求取通道注意力的时候，<strong>通道的处理一般是采用全局最大池化/平均池化，这样会损失掉物体的空间信息</strong>。作者期望在引入通道注意力机制的同时，引入空间注意力机制，作者提出的注意力机制将位置信息嵌入到了通道注意力中。</p>
+<p>CA注意力的实现如图所示，可以认为分为<code class="docutils literal notranslate"><span class="pre">两个并行阶段</span></code>：</p>
+<p>将输入特征图分别在为宽度和高度两个方向分别进行全局平均池化，分别获得在宽度和高度两个方向的特征图。假设输入进来的特征层的形状为[C, H, W]，在经过宽方向的平均池化后，获得的特征层<code class="docutils literal notranslate"><span class="pre">shape为[C,</span> <span class="pre">H,</span> <span class="pre">1]</span></code>，此时我们将特征映射到了高维度上；在经过高方向的平均池化后，获得的特征层<code class="docutils literal notranslate"><span class="pre">shape为[C,</span> <span class="pre">1,</span> <span class="pre">W]</span></code>，此时我们将特征映射到了宽维度上。</p>
+<p>然后将两个并行阶段合并，<strong>将宽和高转置到同一个维度，然后进行堆叠</strong>，将宽高特征合并在一起，此时我们获得的特征层为：[C, 1, H+W]，利用<code class="docutils literal notranslate"><span class="pre">卷积+标准化+激活函数获得特征</span></code>。</p>
+<p>之后再次分开为两个并行阶段，再将宽高分开成为[C, 1, H]和[C, 1, W]，之后进行转置。获得两个特征层[C, H, 1]和[C, 1, W]。</p>
+<p>然后利用<code class="docutils literal notranslate"><span class="pre">1x1卷积调整通道数</span></code>后取sigmoid获得宽高维度上的注意力情况。乘上原有的特征就是CA注意力机制。</p>
+<p>简而言之，通道注意力计算为:</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}\begin{aligned}\mathbf{M_c(F)}&amp;=\sigma(\mathrm{MLP}(\mathrm{AvgPool}(\mathbf{F}))+\mathrm{MLP}(\mathrm{MaxPool}(\mathbf{F})))\\\mathbf{M_c(F)}&amp;=\sigma(\mathbf{W_1}(\mathbf{W_0}(\mathbf{F}_{avg}^c))+\mathbf{W_1}(\mathbf{W_0}(\mathbf{F}_{max}^c)))\end{aligned}\end{split}\]</div>
-<p>where sigma denotes the sigmoid function and $<span class="math notranslate nohighlight">\(\mathbf{W}_0\in\mathbb{R}^{C/r\times C}\text{, and }\mathbf{W}_1\in\mathbb{R}^{C\times C/r}\)</span>$
-ReLU activation function is followed by W0</p>
+</div>
+<p>sigma是sigmoid函数 ，并且 <span class="math notranslate nohighlight">\(\mathbf{W}_0\in\mathbb{R}^{C/r\times C}\text{, }\mathbf{W}_1\in\mathbb{R}^{C\times C/r}\)</span>
+，ReLU跟在W0后使用。</p>
 </section>
 <section id="id2">
-<h2><span class="section-number">4.1.2. </span>流程图<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
-<figure class="align-center" id="my-fig-ref">
+<h2><span class="section-number">3.1.2. </span>流程图<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
+<figure class="align-center" id="id4">
 <a class="reference internal image-reference" href="../_images/channel-attention.png"><img alt="../_images/channel-attention.png" src="../_images/channel-attention.png" style="width: 400px;" /></a>
 <figcaption>
-<p><span class="caption-number">Fig. 4.1 </span><span class="caption-text">Channel attention.</span><a class="headerlink" href="#my-fig-ref" title="Permalink to this image">#</a></p>
+<p><span class="caption-number">Fig. 3.1 </span><span class="caption-text">Channel attention.</span><a class="headerlink" href="#id4" title="Permalink to this image">#</a></p>
 </figcaption>
 </figure>
-<p><a class="reference external" href="https://paperswithcode.com/method/channel-attention-module">感兴趣的可以参考这个链接</a></p>
+<p><a class="reference external" href="https://paperswithcode.com/method/channel-attention-module">可以参考这个链接</a></p>
+</section>
+<section id="id3">
+<h2><span class="section-number">3.1.3. </span>官方代码<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
@@ -622,7 +628,7 @@ ReLU activation function is followed by W0</p>
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">4. </span>SIA核心：self attention</p>
+        <p class="prev-next-title"><span class="section-number">3. </span>SIA核心：attention</p>
       </div>
     </a>
     <a class="right-next"
@@ -630,7 +636,7 @@ ReLU activation function is followed by W0</p>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">4.2. </span>注意力机制</p>
+        <p class="prev-next-title"><span class="section-number">3.2. </span>注意力机制</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -649,8 +655,9 @@ ReLU activation function is followed by W0</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">4.1.1. 简述</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">4.1.2. 流程图</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">3.1.1. 简述</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">3.1.2. 流程图</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">3.1.3. 官方代码</a></li>
 </ul>
   </nav></div>
 

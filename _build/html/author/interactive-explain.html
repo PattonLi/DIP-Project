@@ -162,16 +162,15 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/notebooks.html">1. code</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/myst-markdown.html">2. MystMarkdown Usage</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/pre-knowledge.html">3. SIA核心：self attention</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/paper.html">1. 论文精读</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/code.html">2. 代码介绍</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tutorials/pre-knowledge.html">3. SIA核心：attention</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/channel-attention.html">3.1. CA</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tutorials/self-attention.html">3.2. 注意力机制</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/train-test-model.html">4. 训练-测试 模型</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/traditional-method.html">5. 传统的去阴影方法</a></li>
-
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Author</span></p>
 <ul class="current nav bd-sidenav">
@@ -376,9 +375,17 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1><span class="section-number">2. </span>交互式说明<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
-<p>本来这部分是想做交互式的，但是有一个问题就是切换图片显示的时候需要调用函数，此处需要用到jupyter kernel，而
-转成网页版之后是没有这个的。</p>
+<blockquote>
+<div><p>本来这部分是想做交互式的，但是有一个问题就是切换图片显示的时候需要调用函数，此处需要用到jupyter kernel，而转成html之后无法调用python函数。</p>
+</div></blockquote>
+<blockquote>
+<div><p>并且不太方便手动嵌入html和js代码，这是由于使用的框架的原因。</p>
+</div></blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>我们尝试了很多方法，并在stackoverflow上找到了这样的回答：</p>
 <p>Note that ipywidgets tend to behave differently from other interactive visualization libraries. They interact both with Javascript, and with Python. Some functionality in ipywidgets may not work in default Jupyter Book pages (because no Python kernel is running). You may be able to get around this with tools for remote kernels, like thebe.</p>
+</div>
 </section>
 
     <script type="text/x-thebe-config">

@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>6. 传统的去阴影方法 &#8212; DIP-shadow removing</title>
+    <title>5. 传统的去阴影方法 &#8212; DIP-shadow removing</title>
   
   
   
@@ -67,7 +67,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="1. 小组成员" href="../author/author.html" />
-    <link rel="prev" title="5. 训练-测试 模型" href="train-test-model.html" />
+    <link rel="prev" title="4. 训练-测试 模型" href="train-test-model.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -163,17 +163,15 @@ const thebe_selector_output = ".output, .cell_output"
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="paper.html">1. ShadowFormer: Global Context Helps Shadow Removal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="paper.html">1. 论文精读</a></li>
 <li class="toctree-l1"><a class="reference internal" href="code.html">2. 代码介绍</a></li>
-<li class="toctree-l1"><a class="reference internal" href="myst-markdown.html">3. MystMarkdown Usage</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="pre-knowledge.html">4. SIA核心：self attention</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="channel-attention.html">4.1. CA</a></li>
-<li class="toctree-l2"><a class="reference internal" href="self-attention.html">4.2. 注意力机制</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="pre-knowledge.html">3. SIA核心：attention</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="channel-attention.html">3.1. CA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="self-attention.html">3.2. 注意力机制</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="train-test-model.html">5. 训练-测试 模型</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">6. 传统的去阴影方法</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="train-test-model.html">4. 训练-测试 模型</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">5. 传统的去阴影方法</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Author</span></p>
 <ul class="nav bd-sidenav">
@@ -441,21 +439,15 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">6. 传统的去阴影方法</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#background-subtraction">6.1. 图像背景差分（Background Subtraction）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#background-subtraction">5.1. 图像背景差分（Background Subtraction）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">5.2. 直方图均衡化</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe">5.3. clahe</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gamma">5.4. GAMMA</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe-grid">5.5. CLAHE-grid</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe-grid-v2">5.6. CLAHE-grid-v2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gamma-grid">5.7. gamma-grid</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">5.8. 总结</a></li>
 </ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">7. 直方图均衡化</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe">7.1. clahe</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gamma">7.2. GAMMA</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe-grid">7.3. CLAHE-grid</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe-grid-v2">7.4. CLAHE-grid-v2</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gamma-grid">7.5. gamma-grid</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">7.6. 总结</a></li>
-</ul>
-</li>
-</ul>
-
             </nav>
         </div>
     </div>
@@ -467,7 +459,7 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1><span class="section-number">6. </span>传统的去阴影方法<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
+<h1><span class="section-number">5. </span>传统的去阴影方法<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
 <blockquote>
 <div><p>我们将在这里使用一些传统的图像去阴影的方法，并与基于深度学习的方法做一些简单的对比</p>
 </div></blockquote>
@@ -475,7 +467,7 @@ document.write(`
 <div><p>我们主要用的是<code class="docutils literal notranslate"><span class="pre">open</span> <span class="pre">cv</span></code>来调用一些傅里叶变化、高斯模糊等过程</p>
 </div></blockquote>
 <section id="background-subtraction">
-<h2><span class="section-number">6.1. </span>图像背景差分（Background Subtraction）<a class="headerlink" href="#background-subtraction" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">5.1. </span>图像背景差分（Background Subtraction）<a class="headerlink" href="#background-subtraction" title="Permalink to this heading">#</a></h2>
 <p>将读入的彩色图像拆分成三个不同的灰度通道，对每个通道进行如下处理：</p>
 <ol class="arabic simple">
 <li><p>膨胀操作：用大小为 (7,7) 的矩形结构元素对当前灰度通道进行膨胀操作，使图像中的每个物体更加紧密。</p></li>
@@ -560,9 +552,8 @@ document.write(`
 </div>
 </div>
 </section>
-</section>
-<section class="tex2jax_ignore mathjax_ignore" id="id2">
-<h1><span class="section-number">7. </span>直方图均衡化<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h1>
+<section id="id2">
+<h2><span class="section-number">5.2. </span>直方图均衡化<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h2>
 <p>步骤是将彩色图像转换为灰度图像，并通过直方图均衡化增强图像的对比度和亮度，可以看到结果并不是很好</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -616,11 +607,14 @@ document.write(`
 <img alt="../_images/9cac4e176d18f71932abc3d34f626278cd26b5fed5597220dfd60d507551a3a4.png" src="../_images/9cac4e176d18f71932abc3d34f626278cd26b5fed5597220dfd60d507551a3a4.png" />
 </div>
 </div>
+</section>
 <section id="clahe">
-<h2><span class="section-number">7.1. </span>clahe<a class="headerlink" href="#clahe" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">5.3. </span>clahe<a class="headerlink" href="#clahe" title="Permalink to this heading">#</a></h2>
 <p>通过 <code class="docutils literal notranslate"><span class="pre">cv2.createCLAHE</span></code> 函数指定了 <code class="docutils literal notranslate"><span class="pre">clipLimit</span></code> 参数为<code class="docutils literal notranslate"><span class="pre">2.0</span></code>，这个参数控制了对比度限制的程度。</p>
 <p>还通过 <code class="docutils literal notranslate"><span class="pre">tileGridSize</span></code> 参数设置均衡化操作的区域大小，默认为(8, 8)。</p>
-<p>效果也一般，需要手动去试参数</p>
+<blockquote>
+<div><p>效果也一般，需要手动去试参数</p>
+</div></blockquote>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">method_v2</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
@@ -636,6 +630,7 @@ document.write(`
 
 <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;../images/model-result/A-100-1.png&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">img_output</span> <span class="o">=</span> <span class="n">method_v2</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;origin                       clahe&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_output</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
 <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;../images/tradition/100-1-clahe.png&#39;</span><span class="p">,</span> <span class="n">img_output</span><span class="p">)</span>
 </pre></div>
@@ -645,12 +640,12 @@ document.write(`
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
 </pre></div>
 </div>
-<img alt="../_images/edad6fcef0fe6902059530321e79208efabee2a525af85e6682edd143ea71cda.png" src="../_images/edad6fcef0fe6902059530321e79208efabee2a525af85e6682edd143ea71cda.png" />
+<img alt="../_images/85fc2391e7d0c2eab8b7a3e5bfbac9b79c2b1efca415806b23c539e680a39974.png" src="../_images/85fc2391e7d0c2eab8b7a3e5bfbac9b79c2b1efca415806b23c539e680a39974.png" />
 </div>
 </div>
 </section>
 <section id="gamma">
-<h2><span class="section-number">7.2. </span>GAMMA<a class="headerlink" href="#gamma" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">5.4. </span>GAMMA<a class="headerlink" href="#gamma" title="Permalink to this heading">#</a></h2>
 <p>基于灰度图像的增强方法，主要通过Gamma校正来调整图像的亮度和对比度。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -667,6 +662,7 @@ document.write(`
 
 <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;../images/model-result/A-100-1.png&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">img_output</span> <span class="o">=</span> <span class="n">method_v3</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;origin                       gamma&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img_output</span><span class="p">,</span><span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
 <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;../images/tradition/100-1-gamma.png&#39;</span><span class="p">,</span> <span class="n">img_output</span><span class="p">)</span>
 </pre></div>
@@ -676,12 +672,12 @@ document.write(`
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
 </pre></div>
 </div>
-<img alt="../_images/21f311a16c52e1febcf3c6eae2e39aec01fbae4b24454d9576a19a9d4116de60.png" src="../_images/21f311a16c52e1febcf3c6eae2e39aec01fbae4b24454d9576a19a9d4116de60.png" />
+<img alt="../_images/22d26974f5aa754f850abd1d1a09b82e53f1d1934bac0e3847528506a03d464a.png" src="../_images/22d26974f5aa754f850abd1d1a09b82e53f1d1934bac0e3847528506a03d464a.png" />
 </div>
 </div>
 </section>
 <section id="clahe-grid">
-<h2><span class="section-number">7.3. </span>CLAHE-grid<a class="headerlink" href="#clahe-grid" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">5.5. </span>CLAHE-grid<a class="headerlink" href="#clahe-grid" title="Permalink to this heading">#</a></h2>
 <p>使用不同网格尺寸的CLAHE对象对灰度图像进行增强。通过在不同尺寸的网格上进行CLAHE处理，可以产生多个增强后的图像，从而突出显示不同尺寸下的图像细节和对比度变化。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -718,7 +714,7 @@ document.write(`
 </div>
 </section>
 <section id="clahe-grid-v2">
-<h2><span class="section-number">7.4. </span>CLAHE-grid-v2<a class="headerlink" href="#clahe-grid-v2" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">5.6. </span>CLAHE-grid-v2<a class="headerlink" href="#clahe-grid-v2" title="Permalink to this heading">#</a></h2>
 <p>使用不同对比度限制值的CLAHE对象对灰度图像进行增强。
 通过在不同对比度限制下进行CLAHE处理，产生多个增强后的图像。</p>
 <div class="cell docutils container">
@@ -756,7 +752,7 @@ document.write(`
 </div>
 </section>
 <section id="gamma-grid">
-<h2><span class="section-number">7.5. </span>gamma-grid<a class="headerlink" href="#gamma-grid" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">5.7. </span>gamma-grid<a class="headerlink" href="#gamma-grid" title="Permalink to this heading">#</a></h2>
 <p>使用不同gamma参数值对灰度图像进行伽马校正。通过调整图像亮度，产生多个增强后的图像。</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -793,7 +789,7 @@ document.write(`
 </div>
 </section>
 <section id="id3">
-<h2><span class="section-number">7.6. </span>总结<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<h2><span class="section-number">5.8. </span>总结<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
 <blockquote>
 <div><p>可以发现传统方法的效果很大程度上取决于参数，比如CLAHE的窗口大小和剪切值。
 而基于深度学习的方法就无需认为调参，就会有更好的效果。</p>
@@ -837,7 +833,7 @@ document.write(`
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><span class="section-number">5. </span>训练-测试 模型</p>
+        <p class="prev-next-title"><span class="section-number">4. </span>训练-测试 模型</p>
       </div>
     </a>
     <a class="right-next"
@@ -864,21 +860,15 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">6. 传统的去阴影方法</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#background-subtraction">6.1. 图像背景差分（Background Subtraction）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#background-subtraction">5.1. 图像背景差分（Background Subtraction）</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">5.2. 直方图均衡化</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe">5.3. clahe</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gamma">5.4. GAMMA</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe-grid">5.5. CLAHE-grid</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe-grid-v2">5.6. CLAHE-grid-v2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gamma-grid">5.7. gamma-grid</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">5.8. 总结</a></li>
 </ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">7. 直方图均衡化</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe">7.1. clahe</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gamma">7.2. GAMMA</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe-grid">7.3. CLAHE-grid</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clahe-grid-v2">7.4. CLAHE-grid-v2</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gamma-grid">7.5. gamma-grid</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">7.6. 总结</a></li>
-</ul>
-</li>
-</ul>
-
   </nav></div>
 
 </div></div>
